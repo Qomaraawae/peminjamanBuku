@@ -1,7 +1,5 @@
 <?php
-// ===================================
 // AUTH.PHP - Session Management
-// ===================================
 
 // Start session jika belum dimulai
 if (session_status() === PHP_SESSION_NONE) {

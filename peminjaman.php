@@ -39,7 +39,7 @@ if (isset($_POST['pinjam'])) {
         if (mysqli_num_rows($result_cek) > 0) {
             $error = "❌ User sudah meminjam buku ini dan belum mengembalikannya!";
         } else {
-            // Insert peminjaman - PERBAIKAN: menggunakan id_user, bukan id_anggota
+            // Insert peminjaman
             $query = "INSERT INTO peminjaman (id_buku, id_user, tanggal_pinjam, tanggal_kembali, status) 
                       VALUES ('$id_buku', '$id_user', '$tanggal_pinjam', '$tanggal_kembali', 'dipinjam')";
 
@@ -110,7 +110,7 @@ if (isset($_POST['pinjam'])) {
             <!-- User biasa hanya bisa meminjam untuk dirinya sendiri -->
             <div class="form-group">
                 <label>Peminjam <span style="color: red;">*</span></label>
-                <input type="text" value="<?php echo htmlspecialchars($_SESSION['nama_lengkap']); ?> (<?php echo htmlspecialchars($_SESSION['username']); ?>)" readonly class="form-control" style="background: #f8f9fa; cursor: not-allowed;">
+                <input type="text" value="<?php echo htmlspecialchars($_SESSION['nama_lengkap']); ?>" readonly class="form-control" style="background: #f8f9fa; cursor: not-allowed;">
                 <input type="hidden" name="id_user" value="<?php echo $_SESSION['user_id']; ?>">
                 <small style="color: #666;">Anda hanya bisa meminjam untuk diri sendiri</small>
             </div>
@@ -182,7 +182,6 @@ if (isset($_POST['pinjam'])) {
     </div>
 
     <?php
-    // PERBAIKAN: Query menggunakan users bukan anggota, dan id_user bukan id_anggota
     $query = "SELECT p.*, b.judul, b.pengarang, u.nama_lengkap, u.email, u.username 
               FROM peminjaman p
               JOIN buku b ON p.id_buku = b.id_buku
@@ -267,7 +266,6 @@ if (isset($_POST['pinjam'])) {
     <h2>📝 Riwayat Pengembalian</h2>
 
     <?php
-    // PERBAIKAN: Query menggunakan users bukan anggota
     $query_history = "SELECT p.*, b.judul, u.nama_lengkap, u.username 
                       FROM peminjaman p
                       JOIN buku b ON p.id_buku = b.id_buku

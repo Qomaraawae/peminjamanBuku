@@ -1,7 +1,5 @@
 <?php
-// ===================================
-// CONFIG.PHP - Konfigurasi Database
-// ===================================
+// Configurasi Database
 
 // Start session
 if (session_status() === PHP_SESSION_NONE) {
@@ -11,9 +9,9 @@ if (session_status() === PHP_SESSION_NONE) {
 // Konfigurasi Database
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
-define('DB_PASS', 'root'); // Sesuaikan dengan password MAMP Anda
+define('DB_PASS', 'root');
 define('DB_NAME', 'perpustakaan');
-define('DB_PORT', 3306); // Ubah ke 8889 jika menggunakan port default MAMP
+define('DB_PORT', 3306);
 
 // Membuat koneksi
 $conn = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
@@ -29,34 +27,46 @@ mysqli_set_charset($conn, "utf8mb4");
 // Include file autentikasi
 require_once __DIR__ . '/auth.php';
 
-// ===================================
 // FUNGSI-FUNGSI HELPER
-// ===================================
 
 // Fungsi untuk escape string
-function escape($string) {
+function escape($string)
+{
     global $conn;
     return mysqli_real_escape_string($conn, trim($string));
 }
 
 // Fungsi untuk format rupiah
-function formatRupiah($angka) {
+function formatRupiah($angka)
+{
     return 'Rp ' . number_format($angka, 0, ',', '.');
 }
 
 // Fungsi untuk format tanggal Indonesia
-function formatTanggal($tanggal) {
+function formatTanggal($tanggal)
+{
     $bulan = array(
-        1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        1 => 'Januari',
+        'Februari',
+        'Maret',
+        'April',
+        'Mei',
+        'Juni',
+        'Juli',
+        'Agustus',
+        'September',
+        'Oktober',
+        'November',
+        'Desember'
     );
-    
+
     $split = explode('-', $tanggal);
     return $split[2] . ' ' . $bulan[(int)$split[1]] . ' ' . $split[0];
 }
 
 // Fungsi untuk redirect dengan pesan
-function redirect($url, $message = '', $type = 'success') {
+function redirect($url, $message = '', $type = 'success')
+{
     if (!empty($message)) {
         $_SESSION[$type] = $message;
     }
@@ -65,10 +75,10 @@ function redirect($url, $message = '', $type = 'success') {
 }
 
 // Fungsi untuk sanitize input
-function clean_input($data) {
+function clean_input($data)
+{
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
     return $data;
 }
-?>

@@ -1,5 +1,5 @@
 <?php
-$page_title = "Dashboard - Sistem Peminjaman Buku";
+$page_title = "Sistem Peminjaman Buku";
 require_once 'includes/config.php';
 require_once 'includes/auth.php';
 require_once 'includes/role_helper.php';
@@ -168,7 +168,6 @@ $stok_tersedia = mysqli_fetch_assoc($result_stok_tersedia)['total'] ?? 0;
             </table>
         </div>
         <div style="padding: 20px; border-top: 1px solid #eee;">
-            <a href="peminjaman.php" class="btn btn-primary">📋 Lihat Semua Peminjaman</a>
         </div>
     <?php else: ?>
         <div class="empty-state" style="padding: 60px 20px; text-align: center;">
@@ -228,8 +227,6 @@ $stok_tersedia = mysqli_fetch_assoc($result_stok_tersedia)['total'] ?? 0;
             </table>
         </div>
         <div style="padding: 20px; border-top: 1px solid #eee; display: flex; gap: 10px;">
-            <a href="buku.php" class="btn btn-secondary">📚 Lihat Semua Buku</a>
-            <a href="peminjaman.php" class="btn btn-primary">📖 Pinjam Buku</a>
         </div>
     <?php else: ?>
         <div class="empty-state" style="padding: 60px 20px; text-align: center;">

@@ -61,7 +61,6 @@ $selisih_hari = 0;
 
 if (isset($_GET['id'])) {
     $id = escape($_GET['id']);
-    // PERBAIKAN: Menggunakan users bukan anggota, dan id_user bukan id_anggota
     $query = "SELECT p.*, b.judul, b.pengarang, u.nama_lengkap, u.email, u.username
               FROM peminjaman p
               JOIN buku b ON p.id_buku = b.id_buku
@@ -205,7 +204,6 @@ if (isset($_GET['id'])) {
     </div>
 
     <?php
-    // PERBAIKAN: Query menggunakan users bukan anggota, dan id_user bukan id_anggota
     $query = "SELECT p.*, b.judul, b.pengarang, u.nama_lengkap, u.email, u.username 
               FROM peminjaman p
               JOIN buku b ON p.id_buku = b.id_buku
@@ -362,5 +360,6 @@ if (isset($_GET['id'])) {
         <?php endif; ?>
     </div>
 <?php endif; ?>
+
 
 <?php require_once 'includes/footer.php'; ?>

@@ -1,31 +1,35 @@
 <?php
-// ===================================
 // ROLE HELPER - Fungsi bantuan role
-// ===================================
 
 // Fungsi untuk cek apakah user bisa melakukan operasi tertentu
-function can_create() {
+function can_create()
+{
     return is_admin();
 }
 
-function can_edit() {
+function can_edit()
+{
     return is_admin();
 }
 
-function can_delete() {
+function can_delete()
+{
     return is_admin();
 }
 
-function can_view() {
-    return is_logged_in(); // Semua user yang login bisa lihat
+function can_view()
+{
+    return is_logged_in();
 }
 
-function can_borrow() {
-    return is_logged_in(); // Semua user bisa meminjam
+function can_borrow()
+{
+    return is_logged_in();
 }
 
 // Fungsi untuk menampilkan tombol berdasarkan role
-function show_action_buttons($type = 'all') {
+function show_action_buttons($type = 'all')
+{
     if (!is_admin()) {
         return false;
     }
@@ -33,8 +37,9 @@ function show_action_buttons($type = 'all') {
 }
 
 // Fungsi untuk memvalidasi action sebelum eksekusi
-function validate_action($action) {
-    switch($action) {
+function validate_action($action)
+{
+    switch ($action) {
         case 'create':
         case 'add':
         case 'tambah':
@@ -43,7 +48,7 @@ function validate_action($action) {
                 return false;
             }
             break;
-            
+
         case 'edit':
         case 'update':
             if (!can_edit()) {
@@ -51,7 +56,7 @@ function validate_action($action) {
                 return false;
             }
             break;
-            
+
         case 'delete':
         case 'hapus':
             if (!can_delete()) {
@@ -62,4 +67,3 @@ function validate_action($action) {
     }
     return true;
 }
-?>

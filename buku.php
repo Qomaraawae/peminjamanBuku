@@ -114,9 +114,6 @@ if (isset($_GET['edit'])) {
     <h1>📚 Data Buku</h1>
     <p>Kelola data buku perpustakaan</p>
     <?php if (isset($_SESSION['role'])): ?>
-        <span class="badge badge-info" style="margin-top: 10px; display: inline-block;">
-            Role: <?php echo ucfirst($_SESSION['role']); ?>
-        </span>
     <?php endif; ?>
 </div>
 
@@ -129,6 +126,7 @@ if (isset($_GET['edit'])) {
 <?php endif; ?>
 
 <!-- Form Tambah/Edit Buku -->
+
 <!-- Hanya tampilkan form jika user adalah admin -->
 <?php if ($_SESSION['role'] === 'admin'): ?>
     <div class="form-container">

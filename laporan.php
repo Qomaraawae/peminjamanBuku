@@ -1,5 +1,5 @@
 <?php
-$page_title = "Laporan Perpustakaan";
+$page_title = "Sistem Peminjaman Buku";
 require_once 'includes/config.php';
 require_once 'includes/header.php';
 

@@ -2,7 +2,7 @@
 session_start();
 require_once 'includes/config.php';
 
-// Jika sudah login, redirect ke dashboard
+// redirect ke dashboard
 if (isset($_SESSION['user_id'])) {
     header('Location: index.php');
     exit();
