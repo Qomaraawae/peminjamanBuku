@@ -409,4 +409,168 @@ $buku_result = mysqli_query($conn, $buku_query);
     }
 </script>
 
+<!-- Daftar Peminjaman Aktif -->
+<div class="form-container">
+    <h2>📚 Daftar Peminjaman Aktif</h2>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" onkeyup="searchTable('searchInput', 'peminjamanTable')" placeholder="🔍 Cari peminjam atau buku...">
+    </div>
+
+    <?php
+    $query = "SELECT p.*, b.judul, b.pengarang, u.nama_lengkap, u.email, u.username 
+              FROM peminjaman p
+              JOIN buku b ON p.id_buku = b.id_buku
+              JOIN users u ON p.id_user = u.id_user
+              WHERE p.status = 'dipinjam'";
+
+    // Jika bukan admin, hanya tampilkan milik user sendiri
+    if (!$is_admin) {
+        $query .= " AND p.id_user = '" . $_SESSION['user_id'] . "'";
+    }
+
+    $query .= " ORDER BY p.tanggal_pinjam DESC";
+
+    $result = mysqli_query($conn, $query);
+    ?>
+
+    <?php if (mysqli_num_rows($result) > 0): ?>
+        <div class="table-container">
+            <table id="peminjamanTable">
+                <thead>
+                    <tr>
+                        <?php if ($is_admin): ?>
+                            <th>ID</th>
+                            <th>Peminjam</th>
+                        <?php endif; ?>
+                        <th>Buku</th>
+                        <th>Tgl Pinjam</th>
+                        <th>Tgl Kembali</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = mysqli_fetch_assoc($result)):
+                        $tgl_kembali = strtotime($row['tanggal_kembali']);
+                        $today = strtotime(date('Y-m-d'));
+                        $terlambat = $today > $tgl_kembali;
+                        $selisih_hari = floor(($today - $tgl_kembali) / (60 * 60 * 24));
+                    ?>
+                        <tr style="<?php echo $terlambat ? 'background-color: #fff3cd;' : ''; ?>">
+                            <?php if ($is_admin): ?>
+                                <td><?php echo $row['id_peminjaman']; ?></td>
+                                <td>
+                                    <strong><?php echo htmlspecialchars($row['nama_lengkap']); ?></strong><br>
+                                    <small style="color: #999;">👤 <?php echo htmlspecialchars($row['username']); ?></small>
+                                </td>
+                            <?php endif; ?>
+                            <td>
+                                <strong><?php echo htmlspecialchars($row['judul']); ?></strong><br>
+                                <small style="color: #999;">✍️ <?php echo htmlspecialchars($row['pengarang']); ?></small>
+                            </td>
+                            <td><?php echo date('d/m/Y', strtotime($row['tanggal_pinjam'])); ?></td>
+                            <td>
+                                <?php echo date('d/m/Y', strtotime($row['tanggal_kembali'])); ?>
+                                <?php if ($terlambat): ?>
+                                    <br><span class="badge badge-danger">⚠️ Terlambat <?php echo $selisih_hari; ?> hari</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <span class="badge badge-warning">📖 Dipinjam</span>
+                            </td>
+                            <td>
+                                <a href="pengembalian.php?id=<?php echo $row['id_peminjaman']; ?>" class="btn btn-success btn-sm">
+                                    ✅ Kembalikan
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php else: ?>
+        <div class="empty-state">
+            <h3>📚 Tidak ada peminjaman aktif</h3>
+            <p>Belum ada buku yang sedang dipinjam</p>
+        </div>
+    <?php endif; ?>
+</div>
+
+<!-- Riwayat Peminjaman -->
+<div class="form-container">
+    <h2>📝 Riwayat Pengembalian</h2>
+
+    <?php
+    $query_history = "SELECT p.*, b.judul, u.nama_lengkap, u.username 
+                      FROM peminjaman p
+                      JOIN buku b ON p.id_buku = b.id_buku
+                      JOIN users u ON p.id_user = u.id_user
+                      WHERE p.status = 'dikembalikan'";
+
+    // Jika bukan admin, hanya tampilkan milik user sendiri
+    if (!$is_admin) {
+        $query_history .= " AND p.id_user = '" . $_SESSION['user_id'] . "'";
+    }
+
+    $query_history .= " ORDER BY p.id_peminjaman DESC LIMIT 10";
+
+    $result_history = mysqli_query($conn, $query_history);
+    ?>
+
+    <?php if (mysqli_num_rows($result_history) > 0): ?>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <?php if ($is_admin): ?>
+                            <th>Peminjam</th>
+                        <?php endif; ?>
+                        <th>Buku</th>
+                        <th>Tgl Pinjam</th>
+                        <th>Tgl Kembali</th>
+                        <th>Denda</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = mysqli_fetch_assoc($result_history)): ?>
+                        <tr>
+                            <?php if ($is_admin): ?>
+                                <td><?php echo htmlspecialchars($row['nama_lengkap']); ?></td>
+                            <?php endif; ?>
+                            <td><?php echo htmlspecialchars($row['judul']); ?></td>
+                            <td><?php echo date('d/m/Y', strtotime($row['tanggal_pinjam'])); ?></td>
+                            <td>
+                                <?php if (!empty($row['tanggal_kembali_aktual'])): ?>
+                                    <?php echo date('d/m/Y', strtotime($row['tanggal_kembali_aktual'])); ?>
+                                <?php else: ?>
+                                    <?php echo date('d/m/Y', strtotime($row['tanggal_kembali'])); ?>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php if ($row['denda'] > 0): ?>
+                                    <span class="badge badge-danger"><?php echo formatRupiah($row['denda']); ?></span>
+                                <?php else: ?>
+                                    <span class="badge badge-success">Rp 0</span>
+                                <?php endif; ?>
+                            </td>
+                            <td><span class="badge badge-success">✅ Dikembalikan</span></td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php if ($is_admin): ?>
+            <div style="margin-top: 15px;">
+                <a href="laporan.php" class="btn btn-info">📊 Lihat Laporan Lengkap</a>
+            </div>
+        <?php endif; ?>
+    <?php else: ?>
+        <div class="empty-state">
+            <h3>📝 Belum ada riwayat pengembalian</h3>
+        </div>
+    <?php endif; ?>
+</div>
+
 <?php require_once 'includes/footer.php'; ?>
