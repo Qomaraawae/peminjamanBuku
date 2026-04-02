@@ -1,5 +1,5 @@
 <?php
-// Require login untuk semua halaman kecuali login dan register
+// Require login untuk semua halaman kecuali login dan register 
 $current_page = basename($_SERVER['PHP_SELF']);
 $public_pages = ['login.php', 'register.php'];
 
@@ -7,7 +7,7 @@ if (!in_array($current_page, $public_pages)) {
     require_login();
 }
 
-// Get current user data
+// Get current user data 
 $current_user = get_logged_in_user();
 ?>
 <!DOCTYPE html>
@@ -238,7 +238,7 @@ $current_user = get_logged_in_user();
             <!-- Navigation Menu -->
             <ul class="nav-menu" id="navMenu">
                 <li class="nav-item">
-                    <a href="index.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'index.php') ? 'active' : ''; ?>">
+                    <a href="dashboard.php" class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'active' : ''; ?>">
                         <span class="nav-icon">🏠</span>
                         <span class="nav-text">Dashboard</span>
                     </a>
@@ -290,40 +290,48 @@ $current_user = get_logged_in_user();
                     </li>
                 <?php endif; ?>
 
-                <!-- User Info & Logout -->
-                <li class="nav-item user-info">
+                <!-- Tampilkan Login jika belum login, tampilkan User Info jika sudah login -->
+                <?php if (!is_logged_in()): ?>
+                    <!-- Tombol Login untuk user yang belum login -->
+                    <li class="nav-item">
+                        <a href="login.php" class="nav-link btn-login-nav">
+                            <span class="nav-icon">🔐</span>
+                            <span class="nav-text">Login</span>
+                        </a>
+                    </li>
+                <?php else: ?>
+                    <!-- User Info & Logout untuk user yang sudah login -->
+                    <li class="nav-item user-info">
+                        <button class="user-button" id="userButton">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="user-avatar">👤</div>
+                                <div style="text-align: left;">
+                                    <div class="user-name"><?php echo htmlspecialchars($current_user['nama_lengkap']); ?></div>
+                                    <div class="user-role"><?php echo htmlspecialchars($current_user['role']); ?></div>
+                                </div>
+                            </div>
+                            <span class="dropdown-icon">▼</span>
+                        </button>
 
-                    <!-- User Info & Logout -->
-                <li class="nav-item user-info">
-                    <button class="user-button" id="userButton">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div class="user-avatar">👤</div>
-                            <div style="text-align: left;">
-                                <div class="user-name"><?php echo htmlspecialchars($current_user['nama_lengkap']); ?></div>
-                                <div class="user-role"><?php echo htmlspecialchars($current_user['role']); ?></div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <div class="dropdown-header">
+                                <strong><?php echo htmlspecialchars($current_user['nama_lengkap']); ?></strong>
+                                <small><?php echo htmlspecialchars($current_user['email']); ?></small>
+                                <div style="margin-top: 8px;">
+                                    <span class="role-badge <?php echo $current_user['role']; ?>">
+                                        <?php echo strtoupper($current_user['role']); ?>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="dropdown-menu">
+                                <a href="#" class="dropdown-item logout" onclick="showLogoutModal(); return false;">
+                                    <span>🚪</span>
+                                    <span>Logout</span>
+                                </a>
                             </div>
                         </div>
-                        <span class="dropdown-icon">▼</span>
-                    </button>
-
-                    <div class="user-dropdown" id="userDropdown">
-                        <div class="dropdown-header">
-                            <strong><?php echo htmlspecialchars($current_user['nama_lengkap']); ?></strong>
-                            <small><?php echo htmlspecialchars($current_user['email']); ?></small>
-                            <div style="margin-top: 8px;">
-                                <span class="role-badge <?php echo $current_user['role']; ?>">
-                                    <?php echo strtoupper($current_user['role']); ?>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item logout" onclick="showLogoutModal(); return false;">
-                                <span>🚪</span>
-                                <span>Logout</span>
-                            </a>
-                        </div>
-                    </div>
-                </li>
+                    </li>
+                <?php endif; ?>
             </ul>
         </div>
     </nav>
@@ -639,6 +647,20 @@ $current_user = get_logged_in_user();
             .logout-btn {
                 width: 100%;
             }
+        }
+
+        .btn-login-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            border-radius: 8px;
+            padding: 8px 20px !important;
+            margin-left: 10px;
+        }
+
+        .btn-login-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white !important;
         }
     </style>
 

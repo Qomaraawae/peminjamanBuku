@@ -41,11 +41,20 @@ function get_logged_in_user()
 // Fungsi untuk require login (redirect ke login jika belum login)
 function require_login()
 {
+    // Jangan redirect jika sedang di landing page atau halaman yang tidak memerlukan login
+    $current_file = basename($_SERVER['PHP_SELF']);
+    $allowed_pages = ['landing.php', 'login.php', 'register.php', 'forgot_password.php'];
+
+    if (in_array($current_file, $allowed_pages)) {
+        return true;
+    }
+
     if (!is_logged_in()) {
         $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
         header('Location: login.php');
         exit();
     }
+    return true;
 }
 
 // Fungsi untuk require admin role

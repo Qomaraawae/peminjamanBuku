@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['login_time'] = time();
 
                 // Redirect ke halaman sebelumnya atau dashboard
-                $redirect = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : 'index.php';
+                $redirect = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : 'dashboard.php';
                 unset($_SESSION['redirect_after_login']);
 
                 header('Location: ' . $redirect);

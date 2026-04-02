@@ -6,7 +6,7 @@ $_SESSION = array();
 
 // Destroy session cookie
 if (isset($_COOKIE[session_name()])) {
-    setcookie(session_name(), '', time()-3600, '/');
+    setcookie(session_name(), '', time() - 3600, '/');
 }
 
 // Destroy session
@@ -17,6 +17,5 @@ session_start();
 $_SESSION['success'] = 'Anda telah berhasil logout. Sampai jumpa lagi!';
 
 // Redirect ke halaman login
-header('Location: login.php');
+header('Location: landing.php');
 exit();
-?>
